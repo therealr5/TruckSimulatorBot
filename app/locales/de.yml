@@ -1,0 +1,188 @@
+name: Truck Simulator
+back: Zurück
+cancel: Abbrechen
+back_road: Zurück zur Straße
+coming_soon: Kommt bald
+
+commands:
+  drive:
+    name: drive
+    description: Startet das Spiel.
+  give:
+    name: überweisung
+    description: Sendet Geld an einen anderen Spieler.
+    options:
+      user:
+        name: nutzer
+        description: Der nutzer, dem du Geld geben willst.
+      amount:
+        name: betrag
+        description: Der zu überweisende Betrag.
+  guide:
+    name: handbuch
+    description: Hilfe und Anleitung zu diesem Spiel.
+    options:
+      topic:
+        name: artikel
+        description: Den Artikel, den du lesen willst.
+  info:
+    name: status
+    description: Allgemeine Informationen zu dieser App.
+  profile:
+    name: profil
+    description: Zeigt dein Profil
+    options:
+      user:
+        name: nutzer
+        description: Ein Nutzer, den du anschauen willst.
+
+driving:
+  title: |
+    %{player} genießt den Asphalt
+  minimap: Karte
+  position: Position
+  info:
+    title: Was ist hier?
+    company: Eine Firma mit dem Namen %{name}
+  navigation: "Nagivation: Dein Ziel ist %{place}"
+  buttons:
+    load: Beladen
+    unload: Entladen
+    job:
+      new: Neuer Auftrag
+      show: Auftrag anzeigen
+    home: Menü
+    refill: Tanken
+  load:
+    title: Beladen erfolgreich
+    value: Du hast %{item} geladen.
+  unload:
+    placeholder: Wähle aus, was abgeladen werden soll
+    item_required: (Benötigt für deinen Auftrag)
+    title: Entladen erfolgreich
+    value: Du hast %{items} abgeladen.
+    and_separator: " und "
+
+job:
+  title: Auftrag von %{player}
+  new: Du hast einen neuen Auftrag
+  current: Aktueller Auftrag
+  state:
+    current: Status
+    claimed: Du hast diesen Auftrag angenommen. Dein Ziel ist %{place}. Belade deinen Truck dort.
+    loaded: Du hast alles benötigte geladen. Dein neues Ziel ist %{place}. Endlade deine Ladung dort.
+    done: Dein Auftrag ist ausgeführt und dir wurde $%{reward} gezahlt.
+  notification: Auftragsbenachrichtigung
+  company_notice: Deiner Firma wurden $%{amount} gutgeschrieben.
+  message: |
+    %{place_to} braucht %{item} von %{place_from}. Du bekommst $%{reward} für diesen Transport.
+
+minijob:
+  notification: Minijobsbenachrichtigung
+  message: |
+    %{place} hat dir $%{reward} für das gebrachte %{item} gegeben.
+
+home:
+  truck: Dein Truck
+  company: Deine Firma
+  leaderboard: Ranglisten
+
+profile:
+  author: Profil von %{player}
+  level: Level
+  money: Konto
+  miles: Gefahrene Kilometer
+  truck_miles: (%{miles} mit dem aktuellen Truck)
+  gas: Restbenzin
+  truck: Aktueller Truck
+  load: Aktuelle Ladung
+  company: Firma
+
+top:
+  title: Ranglisten 🎉
+  fields: 
+    level: Die besten Spieler sortiert nach ihrem Level
+    money: Die besten Spieler sortiert nach ihrem Kontostand
+    miles: Die besten Spieler sortiert nach ihren gefahrenen Kilometern
+  footer: Herzlichen Glückwunsch an die Elite!
+  select: Wähle eine Liste
+  keys:
+    level: Level
+    money: Kontostand
+    miles: Gefahrene Kilometer
+
+truck:
+  author: "%{player}'s truck"
+  gas:
+    consumption:
+      title: Benzinverbrauch
+      text: "%{consumption} Liter per Kilometer"
+    capacity:
+      title: Tankvolumen
+      text: "%{capacity} l"
+  price: Preis
+  loading_capacity:
+    title: Maximale Ladung
+    text: "%{amount} Gegenstände"
+  view:
+    placeholder: Details zu einem anderen Truck anschauen
+  buy:
+    placeholder: Kaufe einen neuen Truck
+    author: Dein neuer Truck
+    text: Du hast deinen %{old_name} für $%{selling_price} verkauft und einen brandneuen %{new_name} für $%{price} erworben.
+    checkout: Sieh es dir an
+
+casino:
+  enter: Casino betreten
+  welcome: Wilkommen im Casino
+  invalid_amount: Ungültiger Einsatz
+  slots:
+    author: Slots von %{name}
+    result:
+      title: Ergebnis
+      win3: |
+        :tada: Gratulation, du hast $%{amount} gewonnen :tada:
+      win2: Du hast $%{amount} gewonnen
+      loss: "Du hast $%{amount} verloren"
+    button:
+      again: Erneut versuchen
+      again2: Erneut versuchen (doppelter Einsatz)
+    modal:
+      title: Slots
+      amount:
+        label: Einsatz
+        placeholder: Dein Einsatz, kann 'all' sein
+
+info:
+  name: info
+  description: Allgemeine informationen über diese app.
+  refresh: Aktualisieren
+  system:
+    title: Systeminformationen
+    text: |
+      ```yml
+      Registrierte Spieler: %{players}
+      Laufende Auftragsfahrten: %{jobs}
+      Registrierte Firmen: %{companies}```
+  credits:
+    title: Besonderer Dank an
+    text: |
+      <:lebogo:897861933418565652> **LeBogo**#3073
+      <:panda:897860673898426462> **FlyingPanda**#0328
+      <:miri:897860673546117122> **Miriel**#0001
+  developer: 'Entwickler: r5#2253'
+  links:
+    support: Support
+    terms: Nutzungsbedingungen
+    privacy: Datenschutzerklärung
+
+autocomplete:
+  all: alles
+  half: die Hälfte
+  thousand: |
+    %{amount} tausend
+  million: |
+    %{amount} million
+
+complain:
+  response: Junge WAS IST DENN DAS FÜR EIN SCHMUTZ 😡. Und damit hab ich jetzt mehrere Tage verbracht😡. Wird das Zeug überhaupt getestet bevor es unter die Leute geworfen wird?😡 Einfach nur schrecklich diese Ausgeburt der Inkompetenz; Die Spielmechanik macht keinen Sinn, der Dev macht kaum etwas und über den Zeichner der Bilder wollen wir am besten gar nicht erst reden...

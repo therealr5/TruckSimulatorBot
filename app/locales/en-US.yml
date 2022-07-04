@@ -1,0 +1,192 @@
+name: Truck Simulator
+back: Back
+cancel: Cancel
+back_road: Back to the road
+coming_soon: Coming soon
+
+commands:
+  drive:
+    name: drive
+    description: Starts the game.
+  give:
+    name: give
+    description: Transfers money to a specific user.
+    options:
+      user:
+        name: user
+        description: The user you want to give money to.
+      amount:
+        name: amount
+        description: The amount to give.
+  guide:
+    name: guide
+    description: Handy guide to help you understand this game.
+    options:
+      topic:
+        name: topic
+        description: The topic you want to read about.
+  info:
+    name: info
+    description: Prints out general information about this app.
+  profile:
+    name: profile
+    description: Shows your profile.
+    options:
+      user: 
+        name: user
+        description: A user you want to view.
+
+driving:
+  title: |
+    %{player} is driving
+  minimap: Minimap
+  position: Position
+  info:
+    title: What is here?
+    company: A company called %{name}
+  navigation: "Nagivation: Drive to %{place}"
+  buttons:
+    load: Load
+    unload: Unload
+    job:
+      new: New Job
+      show: Show Job
+    home: Home
+    refill: Refill
+  load:
+    title: Loading successful
+    value: You loaded %{item} into your truck.
+  unload:
+    placeholder: Choose which items to unload
+    item_required: (Required for your job)
+    title: Unloading successful
+    value: You removed %{items} from your truck.
+    and_separator: " and "
+
+job:
+  title: |
+    %{player}`s Job
+  new: You got a new Job
+  current: Current Job
+  state:
+    current: Current state
+    claimed: You claimed this kob. Drive to %{place} and load your truck.
+    loaded: You loaded your truck with the needed items. Now drive to %{place} and unload them.
+    done: Your job is done and you got $%{reward}.
+  notification: Job Notification
+  company_notice: Your company's net worth was increased by $%{amount}.
+  message: |
+    %{place_to} needs %{item} from %{place_from}. You get $%{reward} for this transport.
+
+minijob:
+  notification: Minijob notification
+  message: |
+    %{place} gave you $%{reward} for brining them %{item}.
+
+home:
+  truck: Manage your truck
+  company: Show your company
+  leaderboard: View the leaderboard
+
+profile:
+  author: "%{player}'s profile"
+  level: Level
+  money: Money
+  miles: Miles driven
+  truck_miles: (%{miles} with current truck)
+  gas: Gas left
+  truck: Current truck
+  load: Current load
+  company: Company
+
+top:
+  title: Truck Simulator Toplist 🎉
+  fields: 
+    level: Top players sorted by level
+    money: Top players sorted by money
+    miles: Top players sorted by miles
+  footer: Congratulations if you see yourself in that list!
+  select: View another toplist
+  keys:
+    level: Level
+    money: Money
+    miles: Miles
+  
+
+truck:
+  author: "%{player}'s truck"
+  gas:
+    consumption:
+      title: Gas consumption
+      text: "%{consumption} litres per mile"
+    capacity:
+      title: Gas capacity
+      text: "%{capacity} l"
+  price: Price
+  loading_capacity:
+    title: Loading capacity
+    text: "%{amount} items"
+  view:
+    placeholder: View details about a truck
+  buy:
+    placeholder: Buy a new truck
+    author: You got a new truck
+    text: You sold your old %{old_name} for $%{selling_price} and bought a brand new %{new_name} for $%{price}.
+    checkout: Check it out
+
+casino:
+  enter: Enter the casino
+  welcome: Welcome to the casino
+  invalid_amount: Invalid amount
+  slots:
+    # extra quotes here because of escaping and stuff
+    author: "%{name}'s slots"
+    result:
+      title: Result
+      win3: |
+        :tada: Congratulations you won $%{amount} :tada:
+      win2: You won $%{amount}
+      loss: You lost $%{amount}
+    button:
+      again: Spin again
+      again2: Spin again (double amount)
+    modal:
+      title: Spin a slot machine
+      amount:
+        label: Amount
+        placeholder: The amount you bet. Can be 'all'
+
+info:
+  command:
+    name: info
+    description: Prints out general information about this app.
+  refresh: Refresh data
+  system:
+    title: System inforation
+    text: |
+      ```yml
+      Registered players: %{players}
+      Running jobs: %{jobs}
+      Registered companies: %{companies}```
+  credits:
+    title: Credits
+    text: |
+      <:lebogo:897861933418565652> **LeBogo**#3073 - _Testing helper_ - Contributed 2 lines of code
+      <:panda:897860673898426462> **FlyingPanda**#0328 - _EPIC Artist_ - Drew almost all of the images you see (and had the idea of this bot)
+      <:miri:897860673546117122> **Miriel**#0001 - _The brain_ - Gave a lot of great tips and constructive feedback
+  developer: 'Developer: r5#2253'
+  links:
+    support: Support
+    terms: Terms
+    privacy: Privacy Policy
+
+autocomplete:
+  all: all
+  half: half
+  thousand: |
+    %{amount} thousand
+  million: |
+    %{amount} million
+
+complain:
+  response: What a crap bot this is! 😡 Hours of time wasted on this useless procuct of a terrible coder and a lousy artist 😡 😡 Is this bot even TESTED before the updates are published... Horrible, just HORRIBLE this spawn of incopetence. Who tf made this? A 12 year old child? This child would probably have made it better than THAT 😡

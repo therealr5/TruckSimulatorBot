@@ -9,17 +9,21 @@ from flask_discord_interactions.discord import InteractionType
 from flask_discord_interactions.models.component import ActionRow, Button, ButtonStyles, TextInput
 from flask_discord_interactions.models.embed import Author, Field, Media
 from flask_discord_interactions.models.modal import Modal
+from i18n import set as set_i18n
+from i18n import t
 from resources import components, items, players
+from utils import commatize
 
 gambling_bp = DiscordInteractionsBlueprint()
 
 
 @gambling_bp.custom_handler(custom_id="casino")
 def casino(ctx: Context, player_id: str) -> Message:
+    set_i18n("locale", ctx.locale)
     player = players.get(ctx.author.id, check=player_id)
     return Message(
         embed=Embed(
-            title="Welcome to the casino",
+            title=t("casino.welcome"),
             color=config.EMBED_COLOR,
             image=Media(
                 url=(
@@ -46,20 +50,26 @@ def get_slots_embed(player: players.Player, amount: int) -> Embed:
     slots_embed = Embed(
         description=machine,
         color=config.EMBED_COLOR,
-        author=Author(name=f"{player.name}'s slots"),
+        author=Author(name=t("casino.slots.author", name=player.name)),
         fields=[],
     )
 
     if chosen_items.count(chosen_items[0]) == 3:
         slots_embed.fields.append(
-            Field(name="Result", value=f":tada: Congratulations, you won ${amount * 10:,} :tada:")
+            Field(
+                name=t("casino.slots.result.title"), value=t("casino.slots.result.win3", amount=commatize(amount * 10))
+            )
         )
         player.add_money(amount * 11)
     elif chosen_items.count(chosen_items[0]) == 2 or chosen_items.count(chosen_items[1]) == 2:
-        slots_embed.fields.append(Field(name="Result", value=f"You won ${amount:,}"))
+        slots_embed.fields.append(
+            Field(name=t("casino.slots.result.title"), value=t("casino.slots.result.win2", amount=commatize(amount)))
+        )
         player.add_money(amount * 2)
     else:
-        slots_embed.fields.append(Field(name="Result", value=f"You lost ${amount:,}"))
+        slots_embed.fields.append(
+            Field(name=t("casino.slots.result.title"), value=t("casino.slots.result.loss", amount=commatize(amount)))
+        )
     return slots_embed
 
 
@@ -68,33 +78,36 @@ def get_slots_components(player: players.Player, amount: int) -> list:
         ActionRow(
             components=[
                 Button(
-                    label="Spin again! (double amount)",
+                    label=t("casino.slots.button.again2"),
                     custom_id=[slots_handler, player.id, amount * 2],
                     style=ButtonStyles.SUCCESS,
                     emoji={"name": "🎰"},
                 ),
                 Button(
-                    label="Spin again",
+                    label=t("casino.slots.button.again"),
                     custom_id=[slots_handler, player.id, amount],
                     style=ButtonStyles.SECONDARY,
                 ),
             ]
         ),
-        ActionRow(components=[Button(label="Back", style=2, custom_id=["casino", player.id])]),
+        ActionRow(components=[Button(label=t("back"), style=2, custom_id=["casino", player.id])]),
     ]
 
 
 @gambling_bp.custom_handler(custom_id="slots_init")
 def slots_modal(ctx: Context, player_id):
+    set_i18n("locale", ctx.locale)
     player = players.get(ctx.author.id, check=player_id)
     return Modal(
         custom_id=["slots", player.id],
-        title="Spin a slot machine",
+        title=t("casino.slots.modal.title"),
         components=[
             ActionRow(
                 components=[
                     TextInput(
-                        label="Amount", custom_id="input_amount", placeholder="The amount you want to bet. Can be 'all'"
+                        label=t("casino.slots.modal.amount.label"),
+                        custom_id="input_amount",
+                        placeholder=t("casino.slots.modal.amount.placeholder"),
                     )
                 ]
             )
@@ -104,6 +117,7 @@ def slots_modal(ctx: Context, player_id):
 
 @gambling_bp.custom_handler(custom_id="slots")
 def slots_handler(ctx: Context, player_id: str, amount=0):
+    set_i18n("locale", ctx.locale)
     player = players.get(ctx.author.id, check=player_id)
     if ctx.author.id != player_id:
         raise players.WrongPlayer()
@@ -118,7 +132,7 @@ def slots_handler(ctx: Context, player_id: str, amount=0):
     if str.isnumeric(amount):
         amount = int(amount)
     else:
-        return Message("Invalid amount", ephemeral=True)
+        return Message(t("casino.invalid_amount"), ephemeral=True)
     return Message(
         embed=get_slots_embed(player, amount),
         components=get_slots_components(player, amount),

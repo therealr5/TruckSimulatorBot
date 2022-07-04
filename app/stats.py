@@ -4,22 +4,41 @@ import config
 from flask_discord_interactions import Context, DiscordInteractionsBlueprint, Embed, Message
 from flask_discord_interactions.models.component import ActionRow, Button, SelectMenu, SelectMenuOption
 from flask_discord_interactions.models.embed import Author, Field, Footer, Media
+from flask_discord_interactions.models.option import CommandOptionType, Option
 from flask_discord_interactions.models.user import User
+from i18n import set as set_i18n
+from i18n import t
 from resources import companies, components, levels, players, trucks
-from utils import log_command
+from utils import commatize, get_localizations, log_command
 
 profile_bp = DiscordInteractionsBlueprint()
 
 
-@profile_bp.command(annotations={"user": "A user you want to view."})
+@profile_bp.command(
+    name=t("commands.profile.name", locale=config.I18n.FALLBACK),
+    name_localizations=get_localizations("commands.profile.name"),
+    description=t("commands.profile.description", locale=config.I18n.FALLBACK),
+    description_localizations=get_localizations("commands.profile.description"),
+    options=[
+        Option(
+            type=CommandOptionType.USER,
+            name=t("commands.profile.options.user.name", locale=config.I18n.FALLBACK),
+            name_localizations=get_localizations("commands.profile.options.user.name"),
+            description=t("commands.profile.options.user.description", locale=config.I18n.FALLBACK),
+            description_localizations=get_localizations("commands.profile.options.user.description"),
+        )
+    ],
+)
 def profile(ctx: Context, user: User = None) -> Message:
     "Shows your profile."
     log_command(ctx)
+    set_i18n("locale", ctx.locale)
     return Message(embed=get_profile_embed(user if user else ctx.author))
 
 
 @profile_bp.custom_handler(custom_id="profile_register")
 def register(ctx: Context):
+    set_i18n("locale", ctx.locale)
     if players.registered(ctx.author.id):
         return Message(update=True, deferred=True)
     with open("./messages/welcome.md", "r", encoding="utf8") as welcome_file:
@@ -71,6 +90,7 @@ def register(ctx: Context):
 @profile_bp.custom_handler(custom_id="home")
 def profile_home(ctx: Context, player_id):
     """Shows your profile."""
+    set_i18n("locale", ctx.locale)
     player = players.get(ctx.author.id, check=player_id)
     return Message(embed=get_profile_embed(ctx.author), components=components.get_home_buttons(player), update=True)
 
@@ -84,7 +104,7 @@ def get_profile_embed(user: User) -> Embed:
     if player.discriminator != user.discriminator:
         player.discriminator = user.discriminator
     profile_embed = Embed(
-        author=Author(name=f"{player.name}'s profile"),
+        author=Author(name=t("profile.author", player=player.name)),
         thumbnail=Media(url=user.avatar_url),
         color=config.EMBED_COLOR,
         fields=[],
@@ -92,26 +112,33 @@ def get_profile_embed(user: User) -> Embed:
     )
     profile_embed.fields.append(
         Field(
-            name="Level", value=f"{player.level} ({player.xp:,}/{levels.get_next_xp(player.level):,} xp)", inline=False
+            name=t("profile.level"),
+            value=f"{player.level} ({player.xp:,}/{levels.get_next_xp(player.level):,} xp)",
+            inline=False,
         )
     )
-    profile_embed.fields.append(Field(name="Money", value=f"${player.money:,}"))
+    profile_embed.fields.append(Field(name=t("profile.money"), value=f"${player.money:,}"))
     profile_embed.fields.append(
-        Field(name="Miles driven", value=f"{player.miles:,}\n({player.truck_miles:,} with current truck)", inline=False)
+        Field(
+            name=t("profile.miles"),
+            value=f"{player.miles:,}\n" + t("profile.truck_miles", miles=commatize(player.truck_miles)),
+            inline=False,
+        )
     )
-    profile_embed.fields.append(Field(name="Gas left", value=f"{player.gas} l", inline=False))
-    profile_embed.fields.append(Field(name="Current truck", value=truck.name))
+    profile_embed.fields.append(Field(name=t("profile.gas"), value=f"{player.gas:,} l", inline=False))
+    profile_embed.fields.append(Field(name=t("profile.truck"), value=truck.name))
     if player.loaded_items:
         profile_embed.fields.append(
             Field(
-                name=f"Current load ({len(player.loaded_items)}/{trucks.get(player.truck_id).loading_capacity})",
+                name=t("profile.load")
+                + f" ({len(player.loaded_items)}/{trucks.get(player.truck_id).loading_capacity})",
                 value="".join([str(item) + "\n" for item in player.loaded_items]),
             )
         )
 
     try:
         company = companies.get(player.company)
-        profile_embed.fields.append(Field(name="Company", value=f"{company.logo} {company.name}"))
+        profile_embed.fields.append(Field(name=t("profile.company"), value=f"{company.logo} {company.name}"))
     except companies.CompanyNotFound:
         pass
     return profile_embed
@@ -120,6 +147,7 @@ def get_profile_embed(user: User) -> Embed:
 @profile_bp.custom_handler(custom_id="top")
 def top(ctx: Context, player_id) -> Message:
     "Presents the top players."
+    set_i18n("locale", ctx.locale)
     return Message(
         embed=get_top_embed(), components=get_top_select(players.get(ctx.author.id, check=player_id)), update=True
     )
@@ -128,6 +156,7 @@ def top(ctx: Context, player_id) -> Message:
 @profile_bp.custom_handler(custom_id="top_select")
 def top_select(ctx: Context, player_id) -> Message:
     "Handler for the toplist select"
+    set_i18n("locale", ctx.locale)
     if ctx.author.id != player_id:
         raise players.WrongPlayer()
     return Message(embed=get_top_embed(ctx.values[0]), update=True)
@@ -138,7 +167,7 @@ def get_top_embed(key="level") -> Embed:
     top_players = players.get_top(key)
     top_body = ""
     count = 0
-    top_embed = Embed(title="Truck Simulator top list 🎉", color=config.EMBED_COLOR, fields=[])
+    top_embed = Embed(title=t("top.title"), color=config.EMBED_COLOR, fields=[])
 
     for player in top_players[0]:
         if key == "money":
@@ -149,8 +178,8 @@ def get_top_embed(key="level") -> Embed:
             val = f"{player.level:,} ({player.xp:,}/{levels.get_next_xp(player.level):,} xp)"
         count += 1
         top_body += f"**{count}**. {player} ~ {val}{top_players[1]}\n"
-    top_embed.fields.append(Field(name=f"Top players sorted by {key}", value=top_body))
-    top_embed.footer = Footer(text="Congratulations if you see yourself in that list!", icon_url=config.SELF_AVATAR_URL)
+    top_embed.fields.append(Field(name=t(f"top.fields.{key}"), value=top_body))
+    top_embed.footer = Footer(text=t("top.footer"), icon_url=config.SELF_AVATAR_URL)
     return top_embed
 
 
@@ -161,26 +190,22 @@ def get_top_select(player):
             components=[
                 SelectMenu(
                     custom_id=["top_select", player.id],
-                    placeholder="View another toplist",
+                    placeholder=t("top.select"),
                     options=[
-                        SelectMenuOption(label="Level", value="level", emoji={"name": "🎉", "id": None}),
+                        SelectMenuOption(label=t("top.keys.level"), value="level", emoji={"name": "🎉", "id": None}),
                         SelectMenuOption(
-                            label="Money", value="money", emoji={"name": "ts_money", "id": "868480873157242930"}
+                            label=t("top.keys.money"),
+                            value="money",
+                            emoji={"name": "ts_money", "id": "868480873157242930"},
                         ),
                         SelectMenuOption(
-                            label="Miles", value="miles", emoji={"name": "default_truck", "id": "861674264737087519"}
+                            label=t("top.keys.miles"),
+                            value="miles",
+                            emoji={"name": "default_truck", "id": "861674264737087519"},
                         ),
                     ],
                 )
             ]
         ),
-        ActionRow(
-            components=[
-                Button(
-                    label="Back",
-                    custom_id=["home", player.id],
-                    style=2,
-                )
-            ]
-        ),
+        ActionRow(components=[components.back_home(player.id)]),
     ]

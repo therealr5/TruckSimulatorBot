@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from math import sqrt
 from random import randint
 from time import time
+from i18n import t
+from utils import commatize
 
 from resources import places
 
@@ -90,10 +92,10 @@ def get_state(job: Job) -> str:
     :param Job job: The job to be looked ot
     :return: The message containing the instructions
     """
-    if job.state == 0:
-        return f"You claimed this job. Drive to {job.place_from} and load your truck"
-    if job.state == 1:
-        return f"You loaded your truck with the needed items. Now drive to {job.place_to} and unload them"
-    if job.state == 2:
-        return f"Your job is done and you got ${job.reward:,}."
+    if job.state == STATE_CLAIMED:
+        return t("job.state.claimed", place=job.place_from)
+    if job.state == STATE_LOADED:
+        return t("job.state.loaded", place=job.place_to)
+    if job.state == STATE_DONE:
+        return t("job.state.done", reward=commatize(job.reward))
     return "Something went wrong"

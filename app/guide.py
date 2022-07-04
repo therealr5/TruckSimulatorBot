@@ -7,8 +7,9 @@ from flask_discord_interactions import Context, DiscordInteractionsBlueprint, Em
 from flask_discord_interactions.models.component import ActionRow, Button, SelectMenu, SelectMenuOption
 from flask_discord_interactions.models.embed import Author, Field, Media
 from flask_discord_interactions.models.option import CommandOptionType, Option
+from i18n import t
 from resources import assets, items, places, players, symbols
-from utils import log_command
+from utils import get_localizations, log_command
 
 guide_bp = DiscordInteractionsBlueprint()
 
@@ -72,10 +73,16 @@ def placeinfo(ctx: Context) -> Message:
 
 
 @guide_bp.command(
+    name=t("commands.guide.name", locale=config.I18n.FALLBACK),
+    name_localizations=get_localizations("commands.guide.name"),
+    description=t("commands.guide.description", locale=config.I18n.FALLBACK),
+    description_localizations=get_localizations("commands.guide.description"),
     options=[
         Option(
-            name="topic",
-            description="The topic you want to read about.",
+            name=t("commands.guide.options.topic.name", locale=config.I18n.FALLBACK),
+            name_localizations=get_localizations("commands.guide.options.topic.name"),
+            description=t("commands.guide.options.topic.description", locale=config.I18n.FALLBACK),
+            description_localizations=get_localizations("commands.guide.options.topic.description"),
             type=CommandOptionType.STRING,
             choices=[
                 {"name": f[: f.find(".")].replace("_", " "), "value": f[: f.find(".")]}
@@ -178,9 +185,9 @@ def get_guide_selects(topic: str = ""):
                 components=[
                     Button(
                         style=5,
-                        label=config.INFO_LINKS[0]["name"],
-                        url=config.INFO_LINKS[0]["url"],
-                        emoji=config.INFO_LINKS[0]["emoji"],
+                        label=config.info_links()[0]["name"],
+                        url=config.info_links()[0]["url"],
+                        emoji=config.info_links()[0]["emoji"],
                     )
                 ]
             )
